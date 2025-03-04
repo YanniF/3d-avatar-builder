@@ -1,12 +1,48 @@
-import {useGLTF} from '@react-three/drei'
-import {Suspense, useRef} from "react";
+import {useAnimations, useFBX, useGLTF} from '@react-three/drei'
+import {Suspense, useEffect, useRef} from "react";
 import {pb, useConfiguratorStore} from "../store.js";
 import Asset from "./Asset.jsx";
+import {GLTFExporter} from "three-stdlib";
 
 const Avatar = (props) => {
   const group = useRef()
+
   const {nodes} = useGLTF('/models/Armature.glb')
+  const {animations} = useFBX('/models/Idle.fbx')
+  const {actions} = useAnimations(animations, group)
   const customization = useConfiguratorStore(state => state.customization)
+  const setDownload = useConfiguratorStore(state => state.setDownload)
+
+  useEffect(() => {
+    actions['mixamo.com']?.play()
+  }, [actions]);
+
+  useEffect(() => {
+    const save = (blob, filename) => {
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+    }
+
+    const download = () => {
+      const exporter = new GLTFExporter()
+
+      exporter.parse(
+        group.current,
+        result => {
+          save(new Blob([result], {type: 'application/octet-stream'}), `avatar-${new Date()}.glb`)
+        },
+        error => console.error(error),
+        {binary: true}
+      )
+    }
+
+    const link = document.createElement("a");
+    link.style.display = "none";
+    document.body.appendChild(link);
+
+    setDownload(download)
+  }, []);
 
   return (
     <group ref={group} {...props} dispose={null}>
