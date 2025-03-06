@@ -43,7 +43,7 @@ export const useConfiguratorStore = create((set, get) => ({
   fetchCategories: async () => {
     const categories = await pb.collection('CustomizationGroups').getFullList({
       sort: '+position',
-      expand: 'colorPalette',
+      expand: 'colorPalette,cameraPlacement',
     });
 
     const assets = await pb.collection('CustomizationAssets').getFullList({

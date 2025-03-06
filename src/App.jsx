@@ -1,20 +1,23 @@
 import {Canvas} from "@react-three/fiber";
 import UI from "./components/UI.jsx";
 import Experience from "./components/Experience.jsx";
+import {defaultCameraPosition} from "./CameraManager.jsx";
+import {Leva} from "leva";
 
 function App() {
   return (
     <>
+      <Leva hidden/>
       <UI/>
       <Canvas
         camera={{
-          position: [-1, 1, 5],
+          position: defaultCameraPosition,
           fov: 45
         }}
         shadows={true}
       >
-        <color attach="background" args={['#555']}/>
-        <fog attach="fog" args={["#555", 15, 25]}/>
+        <color attach="background" args={['#130f30']}/>
+        <fog attach="fog" args={['#130f30', 10, 40]}/>
         <group position-y={-1}>
           <Experience/>
         </group>

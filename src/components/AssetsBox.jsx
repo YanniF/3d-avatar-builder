@@ -75,7 +75,7 @@ const AssetsBox = () => {
             key={asset.id}
             onClick={() => changeAsset(currentCategory.name, asset)}
             className={`w-20 h-20  flex-shrink-0 rounded-xl overflow-hidden pointer-events-auto hover:opacity-100 transition-all border-2 duration-300
-              bg-gradient-to-tr
+              bg-gradient-to-tr cursor-pointer
               ${
               customization[currentCategory.name]?.asset?.id === asset.id
                 ? "border-white from-white/20 to-white/30"
