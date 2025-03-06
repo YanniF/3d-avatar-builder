@@ -16,6 +16,7 @@ export const useConfiguratorStore = create((set, get) => ({
   categories: [],
   currentCategory: null,
   assets: [],
+  lockedGroups: {},
   skin: new MeshStandardMaterial({color: '#f5c6a5', roughness: 1}),
   customization: {},
   download: () => {
@@ -63,17 +64,22 @@ export const useConfiguratorStore = create((set, get) => ({
     })
 
     set({categories, assets, currentCategory: categories[0], customization});
+    get().applyLockedAssets()
   },
   setCurrentCategory: (category) => set({currentCategory: category}),
-  changeAsset: (category, asset) => set(state => ({
-    customization: {
-      ...state.customization,
-      [category]: {
-        ...state.customization[category],
-        asset,
+  changeAsset: (category, asset) => {
+    set(state => ({
+      customization: {
+        ...state.customization,
+        [category]: {
+          ...state.customization[category],
+          asset,
+        }
       }
-    }
-  })),
+    }))
+
+    get().applyLockedAssets()
+  },
   randomize: () => {
     const customization = {}
 
@@ -98,5 +104,30 @@ export const useConfiguratorStore = create((set, get) => ({
     })
 
     set({customization});
+    get().applyLockedAssets()
+  },
+  applyLockedAssets: () => {
+    const customization = get().customization;
+    const categories = get().categories;
+    const lockedGroups = {}
+
+    Object.values(customization).forEach((category) => {
+      category.asset?.lockedGroups?.forEach((group) => {
+        const categoryName = categories.find(category => category.id === group)?.name
+
+        if (!lockedGroups[categoryName]) {
+          lockedGroups[categoryName] = [];
+        }
+
+        const lockingAssetCategoryName = categories.find(item => item.id === category.asset.group).name
+
+        lockedGroups[categoryName].push({
+          name: category.asset.name,
+          categoryName: lockingAssetCategoryName
+        })
+      })
+    })
+
+    set({lockedGroups});
   }
 }))

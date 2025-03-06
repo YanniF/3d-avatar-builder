@@ -7,6 +7,7 @@ const Asset = ({url, categoryName, skeleton}) => {
 
   const customization = useConfiguratorStore(state => state.customization)
   const skin = useConfiguratorStore(state => state.skin)
+  const lockedGroups = useConfiguratorStore(state => state.lockedGroups)
   const assetColor = customization[categoryName].color
 
   useEffect(() => {
@@ -36,6 +37,10 @@ const Asset = ({url, categoryName, skeleton}) => {
     });
     return items;
   }, [scene]);
+  
+  if (lockedGroups[categoryName]) {
+    return null
+  }
 
   return attachedItems.map((item, index) => (
     <skinnedMesh
