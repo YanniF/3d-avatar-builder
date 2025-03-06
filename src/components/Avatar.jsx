@@ -8,13 +8,13 @@ const Avatar = (props) => {
   const group = useRef()
 
   const {nodes} = useGLTF('/models/Armature.glb')
-  const {animations} = useFBX('/models/Idle.fbx')
+  const {animations} = useGLTF('/models/Poses.glb')
   const {actions} = useAnimations(animations, group)
   const customization = useConfiguratorStore(state => state.customization)
   const setDownload = useConfiguratorStore(state => state.setDownload)
 
   useEffect(() => {
-    actions['mixamo.com']?.play()
+    actions['Idle']?.play()
   }, [actions]);
 
   useEffect(() => {
