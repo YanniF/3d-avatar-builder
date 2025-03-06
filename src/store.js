@@ -1,6 +1,8 @@
 import {create} from 'zustand'
 import PocketBase from 'pocketbase';
 import {MeshStandardMaterial} from "three";
+import {randInt} from "three/src/math/MathUtils.js";
+import {color} from "three/src/Three.TSL.js";
 
 const pocketBaseUrl = import.meta.env.VITE_POCKETBASE_URL;
 
@@ -71,5 +73,30 @@ export const useConfiguratorStore = create((set, get) => ({
         asset,
       }
     }
-  }))
+  })),
+  randomize: () => {
+    const customization = {}
+
+    get().categories.forEach((category) => {
+      const randomColor = category.expand?.colorPalette?.colors?.[randInt(0, category.expand.colorPalette.colors.length - 1)];
+
+      const randomAssetNumber = randInt(0, category.assets.length - 1)
+      let randomAsset = category.assets[randomAssetNumber];
+
+      if (category.removable && randomAssetNumber === 0) {
+        randomAsset = null
+      }
+
+      customization[category.name] = {
+        asset: randomAsset,
+        color: randomColor,
+      }
+
+      if (category.name === 'Head') {
+        get().updateSkin(randomColor)
+      }
+    })
+
+    set({customization});
+  }
 }))
