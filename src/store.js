@@ -2,7 +2,6 @@ import {create} from 'zustand'
 import PocketBase from 'pocketbase';
 import {MeshStandardMaterial} from "three";
 import {randInt} from "three/src/math/MathUtils.js";
-import {color} from "three/src/Three.TSL.js";
 
 const pocketBaseUrl = import.meta.env.VITE_POCKETBASE_URL;
 
@@ -10,15 +9,44 @@ if (!pocketBaseUrl) {
   throw new Error('VITE_POCKETBASE_URL is required');
 }
 
+// TODO: fix names
+export const PHOTO_POSES = {
+  Idle: "Idle",
+  'Crouch': 'F Crouch Pose',
+  'Cool': 'F Action Pose 01',
+  'Feeling bonita': 'F Standing Pose 01',
+  'Leg up': 'F Standing Pose 02',
+  'Attack': 'M Action Pose 01',
+  'Push ups': 'M Action Pose 02',
+  'Whaaat': 'M Standing Pose 01',
+  'Standing': 'M Standing Pose 03',
+};
+
+export const UI_MODES = {
+  PHOTO: "photo",
+  CUSTOMIZE: "customize",
+};
+
 export const pb = new PocketBase(pocketBaseUrl);
 
 export const useConfiguratorStore = create((set, get) => ({
+  loading: true,
+  mode: UI_MODES.CUSTOMIZE,
+  pose: PHOTO_POSES.Idle,
   categories: [],
   currentCategory: null,
   assets: [],
   lockedGroups: {},
   skin: new MeshStandardMaterial({color: '#f5c6a5', roughness: 1}),
   customization: {},
+  setMode: (mode) => {
+    set({mode});
+
+    if (mode === UI_MODES.CUSTOMIZE) {
+      set({pose: PHOTO_POSES.Idle});
+    }
+  },
+  setPose: (pose) => set({pose}),
   download: () => {
   },
   setDownload: (download) => set({download}),

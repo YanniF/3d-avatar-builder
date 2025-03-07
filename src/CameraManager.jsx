@@ -1,7 +1,7 @@
 import {useEffect, useRef} from "react";
 import {CameraControls} from "@react-three/drei";
 import {button, useControls} from "leva";
-import {useConfiguratorStore} from "./store.js";
+import {useConfiguratorStore, UI_MODES} from "./store.js";
 
 export const defaultCameraPosition = [-1, 1, 5]
 export const defaultCameraTarget = [0, 0, 0]
@@ -9,6 +9,7 @@ export const defaultCameraTarget = [0, 0, 0]
 const CameraManager = () => {
   const controls = useRef()
   const currentCategory = useConfiguratorStore(state => state.currentCategory)
+  const mode = useConfiguratorStore((state) => state.mode);
 
   useControls({
     getCameraPosition: button(() => {
@@ -20,7 +21,7 @@ const CameraManager = () => {
   });
 
   useEffect(() => {
-    if (currentCategory?.expand?.cameraPlacement) {
+    if (mode === UI_MODES.CUSTOMIZE && currentCategory?.expand?.cameraPlacement) {
       controls.current.setLookAt(
         ...currentCategory.expand.cameraPlacement.position,
         ...currentCategory.expand.cameraPlacement.target,
@@ -33,7 +34,7 @@ const CameraManager = () => {
         true
       )
     }
-  }, [currentCategory]);
+  }, [currentCategory, mode]);
 
   return (
     <CameraControls

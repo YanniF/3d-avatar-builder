@@ -1,4 +1,4 @@
-import {useAnimations, useFBX, useGLTF} from '@react-three/drei'
+import {useAnimations, useGLTF} from '@react-three/drei'
 import {Suspense, useEffect, useRef} from "react";
 import {pb, useConfiguratorStore} from "../store.js";
 import Asset from "./Asset.jsx";
@@ -10,12 +10,15 @@ const Avatar = (props) => {
   const {nodes} = useGLTF('/models/Armature.glb')
   const {animations} = useGLTF('/models/Poses.glb')
   const {actions} = useAnimations(animations, group)
+
   const customization = useConfiguratorStore(state => state.customization)
   const setDownload = useConfiguratorStore(state => state.setDownload)
-
+  const pose = useConfiguratorStore(state => state.pose)
+  
   useEffect(() => {
-    actions['Idle']?.play()
-  }, [actions]);
+    actions[pose]?.fadeIn(0.2).play();
+    return () => actions[pose]?.fadeOut(0.2).stop();
+  }, [actions, pose]);
 
   useEffect(() => {
     const save = (blob, filename) => {

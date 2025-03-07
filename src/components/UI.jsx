@@ -1,12 +1,15 @@
 import DownloadButton from "./DownloadButton.jsx";
 import AssetsBox from "./AssetsBox.jsx";
-import {useConfiguratorStore} from "../store.js";
+import {UI_MODES, useConfiguratorStore} from "../store.js";
 import ColorPicker from "./ColorPicker.jsx";
 import RandomizeButton from "./RandomizeButton.jsx";
+import PosesBox from "./PosesBox.jsx";
 
 const UI = () => {
   const currentCategory = useConfiguratorStore(state => state.currentCategory)
   const customization = useConfiguratorStore(state => state.customization)
+  const mode = useConfiguratorStore(state => state.mode)
+  const setMode = useConfiguratorStore(state => state.setMode)
 
   return (
     <main className="fixed z-10 inset-0 select-none pointer-events-none">
@@ -21,10 +24,38 @@ const UI = () => {
           </div>
         </div>
         <div className="flex flex-col px-10">
-          {currentCategory?.colorPalette && customization[currentCategory.name] && (
-            <ColorPicker/>
+          {mode === UI_MODES.CUSTOMIZE && (
+            <>
+              {currentCategory?.colorPalette && customization[currentCategory.name] && (
+                <ColorPicker/>
+              )}
+              <AssetsBox/>
+            </>
           )}
-          <AssetsBox/>
+          {mode === UI_MODES.PHOTO && <PosesBox/>}
+          <div className="flex justify-stretch">
+            <button
+              className={`flex-1 pointer-events-auto cursor-pointer p-4 text-white transition-colors duration-200 font-medium
+                ${mode === UI_MODES.CUSTOMIZE
+                ? "bg-indigo-500/90"
+                : "bg-indigo-500/30 hover:bg-indigo-500/50"}
+              `}
+              onClick={() => setMode(UI_MODES.CUSTOMIZE)}
+            >
+              Customize avatar
+            </button>
+            <div className="w-px bg-white/30"></div>
+            <button
+              className={`flex-1 pointer-events-auto cursor-pointer p-4 text-white transition-colors duration-200 font-medium
+                ${mode === UI_MODES.PHOTO
+                ? "bg-indigo-500/90"
+                : "bg-indigo-500/30 hover:bg-indigo-500/50"}
+                `}
+              onClick={() => setMode(UI_MODES.PHOTO)}
+            >
+              Photo booth
+            </button>
+          </div>
         </div>
       </div>
     </main>
