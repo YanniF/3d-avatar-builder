@@ -50,6 +50,9 @@ export const useConfiguratorStore = create((set, get) => ({
   download: () => {
   },
   setDownload: (download) => set({download}),
+  takeScreenshot: () => {
+  },
+  setScreenshot: (takeScreenshot) => set({takeScreenshot}),
   updateColor: (color) => {
     set(state => ({
       customization: {

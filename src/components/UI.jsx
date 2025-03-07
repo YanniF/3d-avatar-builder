@@ -4,6 +4,7 @@ import {UI_MODES, useConfiguratorStore} from "../store.js";
 import ColorPicker from "./ColorPicker.jsx";
 import RandomizeButton from "./RandomizeButton.jsx";
 import PosesBox from "./PosesBox.jsx";
+import ScreenshotButton from "./ScreenshotButton.jsx";
 
 const UI = () => {
   const currentCategory = useConfiguratorStore(state => state.currentCategory)
@@ -20,6 +21,7 @@ const UI = () => {
           </a>
           <div className="flex items-center gap-3">
             <RandomizeButton/>
+            <ScreenshotButton/>
             <DownloadButton/>
           </div>
         </div>
