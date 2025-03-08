@@ -10,6 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@gltf-transform/core": "^4.1.2",
+    "@gltf-transform/extensions": "^4.1.2",
+    "@gltf-transform/functions": "^4.1.2",
     "@react-spring/three": "^9.7.5",
     "@react-three/drei": "^10.0.3",
     "@react-three/fiber": "^9.0.4",

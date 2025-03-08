@@ -1,8 +1,10 @@
 import {useAnimations, useGLTF} from '@react-three/drei'
 import {Suspense, useEffect, useRef} from "react";
 import {pb, useConfiguratorStore} from "../store.js";
-import Asset from "./Asset.jsx";
 import {GLTFExporter} from "three-stdlib";
+import {dedup, draco, prune, quantize} from "@gltf-transform/functions";
+import Asset from "./Asset.jsx";
+import {NodeIO} from "@gltf-transform/core";
 
 const Avatar = (props) => {
   const group = useRef()
@@ -14,7 +16,7 @@ const Avatar = (props) => {
   const customization = useConfiguratorStore(state => state.customization)
   const setDownload = useConfiguratorStore(state => state.setDownload)
   const pose = useConfiguratorStore(state => state.pose)
-  
+
   useEffect(() => {
     actions[pose]?.fadeIn(0.2).play();
     return () => actions[pose]?.fadeOut(0.2).stop();
@@ -28,20 +30,36 @@ const Avatar = (props) => {
     }
 
     const download = () => {
-      const exporter = new GLTFExporter()
-
+      const exporter = new GLTFExporter();
       exporter.parse(
         group.current,
-        result => {
-          save(new Blob([result], {type: 'application/octet-stream'}), `avatar-${new Date()}.glb`)
+        async (result) => {
+          const io = new NodeIO();
+          const document = await io.readBinary(new Uint8Array(result)); // Uint8Array to Document
+
+          await document.transform(
+            prune(), // remove unused stuff (nodes, textures)
+            dedup(), // remove duplicate vertex or texture data
+            draco(),
+            quantize()
+          );
+
+          const glb = await io.writeBinary(document); // Document → Uint8Array
+
+          save(
+            new Blob([glb], {type: 'application/octet-stream'}),
+            `avatar_${+new Date()}.glb`
+          );
         },
-        error => console.error(error),
+        (error) => {
+          console.error(error);
+        },
         {binary: true}
-      )
+      );
     }
 
-    const link = document.createElement("a");
-    link.style.display = "none";
+    const link = document.createElement('a');
+    link.style.display = 'none'
     document.body.appendChild(link);
 
     setDownload(download)
