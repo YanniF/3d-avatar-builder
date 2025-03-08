@@ -94,7 +94,7 @@ export const useConfiguratorStore = create((set, get) => ({
       }
     })
 
-    set({categories, assets, currentCategory: categories[0], customization});
+    set({categories, assets, currentCategory: categories[0], customization, loading: false});
     get().applyLockedAssets()
   },
   setCurrentCategory: (category) => set({currentCategory: category}),

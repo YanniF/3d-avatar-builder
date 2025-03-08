@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@react-spring/three": "^9.7.5",
     "@react-three/drei": "^10.0.3",
     "@react-three/fiber": "^9.0.4",
+    "@react-three/postprocessing": "^3.0.4",
     "@tailwindcss/vite": "^4.0.9",
     "@types/three": "^0.174.0",
     "leva": "^0.10.0",

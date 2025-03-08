@@ -11,13 +11,20 @@ const UI = () => {
   const customization = useConfiguratorStore(state => state.customization)
   const mode = useConfiguratorStore(state => state.mode)
   const setMode = useConfiguratorStore(state => state.setMode)
+  const loading = useConfiguratorStore(state => state.loading)
 
   return (
     <main className="fixed z-10 inset-0 select-none pointer-events-none">
+      <div
+        className={`absolute inset-0 bg-gray-900 z-10 pointer-events-none flex items-center justify-center transition-opacity duration-1000
+          ${loading ? 'opacity-100' : 'opacity-0'}
+      `}>
+        <img src="/images/logo.png" alt="Logo" className="w-60 animate-pulse"/>
+      </div>
       <div className="mx-auto h-full flex flex-col justify-between">
         <div className="flex justify-between items-center p-10">
           <a href="https://yannifraga.com/" className="pointer-events-auto">
-            <img src="/images/logo.png" alt="Website logo" className="w-20"/>
+            <img src="/images/logo.png" alt="Website logo" className="w-20 app-logo"/>
           </a>
           <div className="flex items-center gap-3">
             <RandomizeButton/>
@@ -25,7 +32,7 @@ const UI = () => {
             <DownloadButton/>
           </div>
         </div>
-        <div className="flex flex-col px-10">
+        <div className="flex flex-col md:px-10">
           {mode === UI_MODES.CUSTOMIZE && (
             <>
               {currentCategory?.colorPalette && customization[currentCategory.name] && (

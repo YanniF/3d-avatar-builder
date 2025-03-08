@@ -3,6 +3,7 @@ import UI from "./components/UI.jsx";
 import Experience from "./components/Experience.jsx";
 import {defaultCameraPosition} from "./CameraManager.jsx";
 import {Leva} from "leva";
+import {Bloom, EffectComposer} from "@react-three/postprocessing";
 
 function App() {
   return (
@@ -22,9 +23,11 @@ function App() {
         <group position-y={-1}>
           <Experience/>
         </group>
+        <EffectComposer>
+          <Bloom mipmapBlur luminanceThreshold={1.2} intensity={1.2}/>
+        </EffectComposer>
       </Canvas>
     </>
-
   )
 }
 

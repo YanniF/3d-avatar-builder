@@ -43,7 +43,7 @@ const AssetsBox = () => {
           }
         </p>
       )}
-      <div className="flex gap-2 flex-wrap px-6">
+      <div className="flex gap-2 overflow-x-auto px-6">
         {currentCategory?.removable && (
           <button
             onClick={() => changeAsset(currentCategory.name, null)}
@@ -74,7 +74,7 @@ const AssetsBox = () => {
           <button
             key={asset.id}
             onClick={() => changeAsset(currentCategory.name, asset)}
-            className={`w-20 h-20  flex-shrink-0 rounded-xl overflow-hidden pointer-events-auto hover:opacity-100 transition-all border-2 duration-300
+            className={`w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden pointer-events-auto hover:opacity-100 transition-all border-2 duration-300
               bg-gradient-to-tr cursor-pointer
               ${
               customization[currentCategory.name]?.asset?.id === asset.id

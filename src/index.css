@@ -10,7 +10,7 @@
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
-  background-color: #555;
+  background-color: #101828;
 }
 
 .no-scrollbar {
@@ -20,4 +20,8 @@ body {
 
 .no-scrollbar::-webkit-scrollbar {
   display: none; /* For Chrome, Safari, and Opera */
+}
+
+.app-logo {
+  transform: scaleX(-1);
 }

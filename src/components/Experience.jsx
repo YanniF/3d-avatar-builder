@@ -1,13 +1,42 @@
-import {Environment, SoftShadows} from "@react-three/drei";
+import {Environment, Float, Gltf, SoftShadows, useProgress} from "@react-three/drei";
 import Avatar from "./Avatar.jsx";
 import CameraManager from "../CameraManager.jsx";
 import {useConfiguratorStore} from "../store.js";
-import {useEffect} from "react";
+import {useEffect, useRef, useState} from "react";
 import {useThree} from "@react-three/fiber";
+import {useSpring, animated} from "@react-spring/three";
+import LoadingAvatar from "./LoadingAvatar.jsx";
 
 const Experience = () => {
   const setScreenshot = useConfiguratorStore(state => state.setScreenshot);
   const gl = useThree(state => state.gl)
+
+  const {active} = useProgress()
+  const [loading, setLoading] = useState(active);
+  const setLoadingAt = useRef(0)
+
+  const {scale, spin, floatHeight} = useSpring({
+    scale: loading ? .5 : 1,
+    spin: loading ? Math.PI * 8 : 0,
+    floatHeight: loading ? .5 : 0
+  })
+
+  useEffect(() => {
+    let timeout
+
+    if (active) {
+      timeout = setTimeout(() => {
+        setLoading(true)
+        setLoadingAt.current = Date.now()
+      }, 50) // show spinner only after 50ms
+    } else {
+      timeout = setTimeout(() => {
+        setLoading(false)
+      }, Math.max(0, 2000 - (Date.now() - setLoadingAt.current))); // show spinner for at least 2s
+    }
+
+    return () => clearTimeout(timeout);
+  }, [active]);
 
   useEffect(() => {
     const takeScreenshot = () => {
@@ -62,7 +91,7 @@ const Experience = () => {
 
       <Environment preset="sunset" environmentIntensity={0.3}/>
 
-      <mesh receiveShadow rotation-x={-Math.PI / 2}>
+      <mesh receiveShadow rotation-x={-Math.PI / 2} position-y={-0.31}>
         <planeGeometry args={[100, 100]}/>
         <meshStandardMaterial color="#333" roughness={0.85}/>
       </mesh>
@@ -88,7 +117,22 @@ const Experience = () => {
         intensity={8}
         color={"#3cb1ff"}
       />
-      <Avatar/>
+      <Float floatIntensity={loading ? 1 : 3} speed={loading ? 6 : 0}>
+        <animated.group
+          scale={scale}
+          position-y={floatHeight}
+          rotation-y={spin}
+        >
+          <Avatar/>
+        </animated.group>
+      </Float>
+      <Gltf
+        src='/models/Teleporter Base.glb'
+        position-y={-0.31}
+        castShadow
+        receiveShadow
+      />
+      <LoadingAvatar loading={loading}/>
     </>
   )
 }
